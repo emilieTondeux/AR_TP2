@@ -170,6 +170,7 @@ public class NioClient {
 		digest = md5(data2);
 		
 		// send back the received message doubled
+
 		send(data2, 0, data2.length);
 		nloops++;
 	}
