@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.util.LinkedList;
 import java.util.Vector;
 
 public class Writer {
@@ -31,10 +30,12 @@ public class Writer {
 			sc.write(buffer_len);
 			if (!buffer_len.hasRemaining()) {//Il ne reste plus rien
 				state = WRITING_MSG;
+				buffer_len.rewind();
 			}
 		}else if (state == WRITING_MSG){
 			sc.write(buffer_msg);
 			if (!buffer_msg.hasRemaining()) {//il ne reste plus rien
+				buffer_msg.rewind();
 				if (list_messages.isEmpty()) {//si il n'y a plus de messages à envoyer dans la liste de messages
 					state = NEUTRAL;
 					key.interestOps(SelectionKey.OP_READ);
@@ -50,7 +51,9 @@ public class Writer {
 		byte[] msg = list_messages.get(0);
 		buffer_msg = ByteBuffer.allocate(msg.length);
 		buffer_len.putInt(msg.length);
+		buffer_len.rewind();
 		buffer_msg.put(msg);
+		buffer_msg.rewind();
 		list_messages.remove(0);
 		state = WRITING_LEN;
 	}
