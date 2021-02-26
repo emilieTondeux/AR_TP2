@@ -159,11 +159,17 @@ public class NioClient {
 		// Let's print the received message, assuming it is a UTF-8 string
 		// since it is the format of the first message sent to the server.
 		String msg = new String(data, Charset.forName("UTF-8"));
-		System.out.println("NioClient received msg["+nloops+"]: " + msg);
+		System.out.println("NioClient received msg["+nloops+"]: " + n);
 
 
 		// send back the received message
-		send(data, 0, data.length);
+		byte[] data2 = new byte[data.length*2];
+		for(int i= 0; i<data.length; i++) {
+			data2[i]=data[i];
+			data2[data.length+i] = data[i];
+		}
+		digest = md5(data2);
+		send(data2, 0, data2.length);
 		nloops++;
 	}
 
