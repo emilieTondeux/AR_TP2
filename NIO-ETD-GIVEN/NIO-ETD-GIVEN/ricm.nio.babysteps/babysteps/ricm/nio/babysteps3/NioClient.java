@@ -1,4 +1,4 @@
-package ricm.nio.babystep2;
+package ricm.nio.babysteps3;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -165,7 +165,17 @@ public class NioClient {
 	public static void main(String args[]) throws IOException {
 		int serverPort = NioServer.DEFAULT_SERVER_PORT;
 		String serverAddress = "localhost";
-		String msg = "Hello There...";
+		String msg = "\n" + 
+				"\n" + 
+				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam maximus condimentum ligula, at hendrerit ex semper eget. Fusce placerat bibendum sagittis. Sed nisl magna, ultrices eget ante sodales, volutpat interdum purus. Donec consequat vehicula eros vitae ultricies. Donec aliquet posuere turpis non elementum. Mauris pulvinar, lacus et aliquam fermentum, massa nulla dapibus erat, vel aliquet dolor lacus nec libero. Phasellus ut porttitor elit. In congue luctus felis vitae tempor. Morbi iaculis rutrum mauris eget vestibulum. Fusce eleifend libero risus, id gravida quam sodales in. Curabitur pulvinar dolor viverra, malesuada arcu id, mollis quam. Maecenas nec dignissim purus. Phasellus semper et enim eget mattis.\n" + 
+				"\n" + 
+				"Aliquam vel orci urna. Nunc lobortis diam et nibh feugiat elementum. Cras scelerisque orci et orci iaculis, sit amet sollicitudin nulla auctor. Suspendisse elit dui, faucibus nec augue eget, hendrerit vehicula libero. Aliquam mollis lorem sem, at semper turpis condimentum in. Vivamus arcu enim, hendrerit non mauris in, venenatis mollis orci. Suspendisse vitae placerat quam. Quisque in eros congue, fringilla libero a, malesuada est. Sed ornare pharetra felis ut semper.\n" + 
+				"\n" + 
+				"Nam id maximus odio. Nulla sed lacinia massa, non dapibus orci. Phasellus malesuada lorem sed arcu auctor, mollis luctus felis vehicula. Nulla eget nisi ut elit vestibulum condimentum. Proin cursus efficitur elit, vel dictum ante finibus quis. Etiam sit amet ornare neque. Nulla ut molestie nibh. Sed egestas orci vitae enim viverra, eu vulputate diam accumsan. Nulla facilisi.\n" + 
+				"\n" + 
+				"Maecenas sodales dolor ac sollicitudin accumsan. Nunc ultricies convallis dapibus. Proin congue velit dictum metus eleifend tincidunt. Aliquam malesuada laoreet sapien id consequat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus a pulvinar augue. Phasellus varius velit malesuada metus fringilla, id volutpat lorem ullamcorper. Ut turpis ligula, suscipit ac rutrum vel, malesuada id tortor. Nam rhoncus hendrerit nisi, vitae faucibus magna ultrices sed. Aliquam erat volutpat. Phasellus tempus faucibus dictum. Aenean luctus ac mauris ac tempus. Suspendisse eros arcu, scelerisque non iaculis eget, dictum nec dolor. In et dolor id ante dapibus feugiat eu ac ante.\n" + 
+				"\n" + 
+				"Donec ullamcorper diam id sem faucibus, vitae cursus ex malesuada. Duis vestibulum libero sit amet lobortis hendrerit. In ultrices nunc ultricies risus luctus, nec hendrerit orci condimentum. Nulla facilisi. Donec nec malesuada nunc. Nullam vel nisi rutrum, viverra lectus in, molestie nunc. Donec facilisis nisi non aliquet cursus. Quisque vel risus a mauris euismod congue dapibus vitae sapien. Sed eget fermentum enim, vel tempor odio. Nunc ante ligula, placerat eu dolor eget, mollis eleifend leo. Interdum et malesuada fames ac ante ipsum primis in faucibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla et velit vulputate, sodales purus et, laoreet metus. Curabitur vehicula orci non nibh faucibus sagittis. Nullam ut arcu sit amet nulla mattis suscipit at ultricies ex. ";
 		String arg;
 
 		for (int i = 0; i < args.length; i++) {

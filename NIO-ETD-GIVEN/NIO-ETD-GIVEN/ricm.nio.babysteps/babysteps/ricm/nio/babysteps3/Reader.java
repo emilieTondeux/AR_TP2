@@ -1,4 +1,4 @@
-package ricm.nio.babystep2;
+package ricm.nio.babysteps3;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -58,17 +58,11 @@ public class Reader {
 		String message = new String(msg, Charset.forName("UTF-8"));
 		System.out.println("NioClient received msg: " + msg.length);
 		System.out.println(message);
-		// double the recieved message
-		byte[] data2 = new byte[msg.length*2];
-		for (int i = 0; i < msg.length; i++) {
-			data2[i] = msg[i];
-			data2[i+msg.length] = msg[i];
-		}
 		
 		// send back the received message doubled
 		Writer wr = new Writer(sc,key);
 		key.attach(wr);
-		wr.sendMsg(data2);
+		wr.sendMsg(msg);
 	}
 	
 }
