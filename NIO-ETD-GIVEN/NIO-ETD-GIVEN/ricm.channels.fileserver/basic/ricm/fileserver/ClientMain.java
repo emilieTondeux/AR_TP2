@@ -7,7 +7,7 @@ public class ClientMain {
 	public static final int DEFAULT_SERVER_PORT = 8888;
 	
 	public static void main(String args[]) throws Exception {
-		String filename = ".project";
+		String filename = "lorem.txt";
 		String hostname = "localhost";
 		int port = DEFAULT_SERVER_PORT;
 		

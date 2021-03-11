@@ -18,6 +18,7 @@ public class FileDownloadApplication implements IBrokerListener, IChannelListene
 	String filename;
 	IBroker engine;
 	boolean isText;
+	long count;
 
 	public FileDownloadApplication(IBroker engine) {
 		this.engine = engine;
@@ -46,6 +47,7 @@ public class FileDownloadApplication implements IBrokerListener, IChannelListene
 			dos.close();
 			byte[] bytes = os.toByteArray();
 			c.send(bytes);
+			count = 0;
 		} catch (Exception ex) {
 			ex.printStackTrace(System.err);
 			System.exit(-1);
@@ -66,33 +68,36 @@ public class FileDownloadApplication implements IBrokerListener, IChannelListene
 
 	@Override
 	public void received(IChannel c, byte[] reply) {
-		System.out.println("===============================================================");
-		System.out.println("Received:");
-		System.out.println("===============================================================");
-
 		InputStream is = new ByteArrayInputStream(reply);
 		DataInputStream dis = new DataInputStream(is);
 		try {
-			int nbytes = dis.readInt();
-			if (nbytes < 0)
-				System.out.println("Server returns an error code: " + nbytes);
-			else {
-				System.out.println("Download " + nbytes + " bytes");
-				byte[] bytes = new byte[nbytes];
+			int type = dis.readInt();
+			switch(type) {
+			case 0:
+				count += dis.available();
+				byte[] bytes = new byte[dis.available()];
 				dis.readFully(bytes);
-				if (isText) {
+				if(isText) {
 					String txt = new String(bytes, "UTF-8");
-					System.out.println(txt);
+					System.out.print(txt);					
 				}
+				break;
+			case -4:
+				System.out.println();
+				System.out.println("Downloaded " + count + " bytes");
+				System.out.println("===============================================================");
+				System.out.println("\n\nBye");
+				System.exit(0);
+				c.close();
+				break;
+			default:
+				System.out.println("Server returns an error code: " + type);
+				break;
 			}
 		} catch (Exception ex) {
 			System.out.println(" failed parsing the received message");
 			ex.printStackTrace();
 		}
-		System.out.println("===============================================================");
-		System.out.println("\n\nBye");
-		c.close();
-		System.exit(0);
 	}
 
 	@Override

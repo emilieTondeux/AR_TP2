@@ -22,13 +22,14 @@ import ricm.channels.IChannelListener;
 
 public class FileServerApplication implements IBrokerListener, IChannelListener {
 
+	public static final int CHUNK_SIZE = 512;
 	IBroker engine;
 	String folder;
 	int port;
 
 	void panic(String msg, Exception ex) {
 		ex.printStackTrace(System.err);
-		System.err.println("PANIC: "+msg);
+		System.err.println("PANIC: " + msg);
 		System.exit(-1);
 	}
 
@@ -40,40 +41,46 @@ public class FileServerApplication implements IBrokerListener, IChannelListener 
 			this.folder = folder + File.separator;
 		this.engine.setListener(this);
 		if (!this.engine.accept(port)) {
-			System.err.println("Refused accept on "+port);
+			System.err.println("Refused accept on " + port);
 			System.exit(-1);
 		}
 	}
 
-	byte[] readFile(String filename) {
-		File f = new File(folder + filename);
-		if (!f.exists() || !f.isFile())
-			return null;
+	byte[] readFile(FileInputStream fis) throws IOException {
 		byte[] bytes;
-		int nbytes = (int) f.length();
-		try {
-			FileInputStream fis;
-			fis = new FileInputStream(f);
-			try {
-				bytes = new byte[nbytes];
-				for (int nread = 0; nread < f.length();) {
-					int r;
-					try {
-						r = fis.read(bytes, nread, nbytes - nread);
-						nread += r;
-					} catch (IOException e) {
-						return null;
-					}
-				}
-			} finally {
-				fis.close();
-			}
-		} catch (FileNotFoundException e) {
-			return null;
-		} catch (IOException e) {
-			return null;
+		int length = 0;
+		int remaining = fis.available();
+		if (remaining > CHUNK_SIZE) {
+			length = CHUNK_SIZE;
+		} else {
+			length = remaining;
 		}
+		bytes = new byte[length];
+		for (int nread = 0; nread < length;) {
+			int r;
+			try {
+				r = fis.read(bytes, nread, length - nread);
+				nread += r;
+			} catch (IOException e) {
+				return null;
+			}
+		}
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		DataOutputStream dos = new DataOutputStream(os);
+		dos.writeInt(0);
+		dos.write(bytes);
+		bytes = os.toByteArray();
+		os.close();
 		return bytes;
+	}
+
+	File openFile(String filename) {
+		File f = new File(folder + filename);
+		if (!f.exists() || !f.isFile()) {
+			return null;
+		} else {
+			return f;
+		}
 	}
 
 	/**
@@ -101,13 +108,19 @@ public class FileServerApplication implements IBrokerListener, IChannelListener 
 					dos.writeInt(-1); // could not parse the request
 					return;
 				}
-				byte[] bytes;
-				bytes = readFile(filename);
-				if (bytes == null) {
+				File f = openFile(filename);
+				if (f == null) {
 					dos.writeInt(-2); // requested file does not exist
 				} else {
-					dos.writeInt(bytes.length);
-					dos.write(bytes);
+					FileInputStream fis = new FileInputStream(f);
+					long cursor = 0;
+					while (cursor < f.length()) {
+						byte[] bytes = readFile(fis);
+						channel.send(bytes);
+						cursor += CHUNK_SIZE;
+					}
+					fis.close();
+					dos.writeInt(-4); //All packets sent.
 				}
 			} catch (IOException ex) {
 				ex.printStackTrace(System.err);
